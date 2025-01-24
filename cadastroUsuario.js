@@ -6,7 +6,7 @@ document.getElementById("form-cadastro").addEventListener("submit", async (event
   const email = document.getElementById("email").value;
   const senha = document.getElementById("senha").value;
   const telefone = document.getElementById("telefone").value;
-  const dataNascimento = document.getElementById("dataNascimento").value;
+  const dataNascimento = document.getElementById("dataNascimento").value; // Campo de Data de Nascimento
 
   // Criando o objeto com os dados do usuário
   const dadosUsuario = {
@@ -14,7 +14,7 @@ document.getElementById("form-cadastro").addEventListener("submit", async (event
     email,
     senha,
     telefone,
-    dataNascimento,
+    dataNascimento, // Incluindo o campo de Data de Nascimento
   };
 
   try {
@@ -30,9 +30,10 @@ document.getElementById("form-cadastro").addEventListener("submit", async (event
       }
     );
 
-    // Tratando a resposta
+    // Verificando se a resposta foi bem-sucedida
     if (!resposta.ok) {
-      throw new Error(`HTTP status ${resposta.status}`);
+      const errorMessage = await resposta.text(); // Captura a mensagem de erro do servidor
+      throw new Error(`Erro ao cadastrar: ${errorMessage}`);
     }
 
     const resultado = await resposta.json();
@@ -42,7 +43,7 @@ document.getElementById("form-cadastro").addEventListener("submit", async (event
       alert("Cadastro realizado com sucesso!");
       document.getElementById("form-cadastro").reset();
     } else {
-      throw new Error(resultado.mensagem || "Erro ao cadastrar usuário");
+      throw new Error(resultado.error || "Erro ao cadastrar usuário");
     }
   } catch (error) {
     console.error("Erro ao realizar o cadastro:", error);
