@@ -1,42 +1,32 @@
-document.getElementById("form-cadastro").addEventListener("submit", async (event) => {
-  event.preventDefault();
+document.getElementById('cadastro-form').addEventListener('submit', function(event) {
+  event.preventDefault(); // Evita o envio padrão do formulário
 
-  // Capturando os valores dos campos
-  const nome = document.getElementById("nome").value;
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
-  const telefone = document.getElementById("telefone").value;
-  const dataNascimento = document.getElementById("dataNascimento").value; // Campo de Data de Nascimento
-
-  // Criando o objeto com os dados do usuário
-  const dadosUsuario = {
-    nome,
-    email,
-    senha,
-    telefone,
-    dataNascimento, // Incluindo o campo de Data de Nascimento
+  const dados = {
+    nomeResponsavel: document.getElementById('nomeResponsavel').value,
+    email: document.getElementById('email').value,
+    telefone: document.getElementById('telefone').value,
+    senha: document.getElementById('senha').value,
+    dataNascimento: document.getElementById('dataNascimento').value
   };
-  console.log("Dados do usuário:", dadosUsuario);
-  try {
-    // Enviando os dados para o Google Apps Script
-    await fetch(
-      "https://script.google.com/macros/s/AKfycbyRndtjJVj41ZwKEMtVY6vbBGY7lxwSS5No8raWkZw29_yIfjCHyBH6WX9ZCo7lGpHbfg/exec",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dadosUsuario),
-        mode: "no-cors", // Modo para evitar erros de CORS
-      }
-    );
 
-    // Como estamos usando no-cors, não podemos verificar a resposta
-    alert("Cadastro realizado com sucesso!"); // Mensagem de sucesso genérica
-    document.getElementById("form-cadastro").reset();
-
-  } catch (error) {
-    console.error("Erro ao realizar o cadastro:", error);
-    alert("Erro ao realizar cadastro: " + error.message);
-  }
+  // Enviar dados para o Google Apps Script via POST
+  fetch('https://script.google.com/macros/s/AKfycbyRndtjJVj41ZwKEMtVY6vbBGY7lxwSS5No8raWkZw29_yIfjCHyBH6WX9ZCo7lGpHbfg/exec', { 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(dados)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      document.getElementById('mensagem').innerText = 'Usuário cadastrado e planilha criada com sucesso!';
+    } else {
+      document.getElementById('mensagem').innerText = 'Erro ao cadastrar usuário: ' + data.error;
+    }
+  })
+  .catch(error => {
+    document.getElementById('mensagem').innerText = 'Erro ao enviar os dados. Tente novamente mais tarde.';
+    console.error('Erro ao enviar dados:', error);  // Melhorar a visibilidade de erros no console
+  });
 });
