@@ -16,7 +16,7 @@ document.getElementById("form-cadastro").addEventListener("submit", async (event
     telefone,
     dataNascimento, // Incluindo o campo de Data de Nascimento
   };
-
+  console.log("Dados do usuário:", dadosUsuario);
   try {
     // Enviando os dados para o Google Apps Script
     await fetch(
